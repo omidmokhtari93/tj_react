@@ -1,8 +1,7 @@
 
 import React, { Component } from 'react';
 import TradesTable from './Table';
-import BrokerTimeDate from './BrokerTimeDate';
-import http from 'axios';
+import BrokerTimeDate from '../Shared/BrokerTimeDate';
 
 export default class Panel extends Component {
     constructor(props) {
@@ -22,10 +21,14 @@ export default class Panel extends Component {
         }
     }
 
-    handleChange = (e) => {
+    handleChange = e => {
         e.target.id == 'file'
             ? this.setState({ [e.target.id]: e.target.files[0] })
             : this.setState({ [e.target.id]: e.target.value });
+    }
+
+    submitForm = e => {
+
     }
 
     render() {
@@ -45,22 +48,23 @@ export default class Panel extends Component {
                         <div id="home">
                             <div className="row rtl text-right">
                                 <div className="col-sm-6">
-                                    <div className="mt-1">زمان ورود معامله</div>
-                                    <input className="form-control text-center ltr" id="enterdate" onChange={this.handleChange}
-                                        onFocus={(e) => { BrokerTimeDate(e) }} required
-                                        style={{ fontFamily: 'arial' }} />
+                                    <div className="mt-1">زمان ورود به معامله</div>
+                                    <input className="form-control text-center ltr" id="enterdate"
+                                        onChange={this.handleChange} onFocus={(e) => { BrokerTimeDate(e) }} required
+                                        value={this.state.enterdate} style={{ fontFamily: 'arial' }} />
                                 </div>
                                 <div className="col-sm-6">
                                     <div className="mt-1">زمان خروج از معامله</div>
-                                    <input className="form-control text-center ltr" id="closedate" onChange={this.handleChange}
-                                        onFocus={(e) => { BrokerTimeDate(e) }}
-                                        style={{ fontFamily: 'arial' }} />
+                                    <input className="form-control text-center ltr" id="closedate"
+                                        onChange={this.handleChange} onFocus={(e) => { BrokerTimeDate(e) }}
+                                        value={this.state.closedate} style={{ fontFamily: 'arial' }} />
                                 </div>
                             </div>
                             <div className="row rtl text-right">
                                 <div className="col-sm-4">
                                     <div className="mt-1">نماد</div>
-                                    <select className="form-control ltr" id="symbol" required onChange={this.handleChange}>
+                                    <select className="form-control ltr" id="symbol" required
+                                        onChange={this.handleChange} value={this.state.symbol}>
                                         <option>DOWJONES</option>
                                         <option>GOLD</option>
                                         <option>EURUSD</option>
@@ -82,40 +86,48 @@ export default class Panel extends Component {
                                 </div>
                                 <div className="col-sm-4">
                                     <div className="mt-1">حجم معامله (Lot)</div>
-                                    <input className="form-control text-center ltr" type="number" id="volume" required onChange={this.handleChange} />
+                                    <input className="form-control text-center ltr" type="number" id="volume"
+                                        required onChange={this.handleChange} value={this.state.volume} />
                                 </div>
                                 <div className="col-sm-4">
                                     <div className="mt-1">سود / ضرر ($)</div>
-                                    <input className="form-control text-center ltr" type="number" id="profit" required onChange={this.handleChange} />
+                                    <input className="form-control text-center ltr" type="number" id="profit" required
+                                        onChange={this.handleChange} value={this.state.profit} />
                                 </div>
                             </div>
                             <div className="row rtl text-right">
                                 <div className="col-sm-4">
                                     <div className="mt-1">دلایل ورود به معامله</div>
-                                    <textarea rows="3" className="form-control no-resize" id="tradereason" onChange={this.handleChange}></textarea>
+                                    <textarea rows="3" className="form-control no-resize" id="tradereason"
+                                        onChange={this.handleChange} value={this.state.tradereason}></textarea>
                                 </div>
                                 <div className="col-sm-4">
                                     <div className="mt-1">حالت روانی ورود به معامله</div>
-                                    <textarea rows="3" className="form-control no-resize" id="enterravani" onChange={this.handleChange}></textarea>
+                                    <textarea rows="3" className="form-control no-resize" id="enterravani"
+                                        onChange={this.handleChange} value={this.state.enterravani}></textarea>
                                 </div>
                                 <div className="col-sm-4">
                                     <div className="mt-1">حالت روانی خروج از معامله</div>
-                                    <textarea rows="3" className="form-control no-resize" id="closeravani" onChange={this.handleChange}></textarea>
+                                    <textarea rows="3" className="form-control no-resize" id="closeravani"
+                                        onChange={this.handleChange} value={this.state.closeravani}></textarea>
                                 </div>
                             </div>
                             <div className="row rtl text-right">
                                 <div className="col-sm-6">
                                     <div className="mt-1">اشتباهات</div>
-                                    <textarea rows="3" className="form-control no-resize" id="mistakes" onChange={this.handleChange}></textarea>
+                                    <textarea rows="3" className="form-control no-resize" id="mistakes"
+                                        onChange={this.handleChange} value={this.state.mistakes}></textarea>
                                 </div>
                                 <div className="col-sm-6">
                                     <div className="mt-1">توضیحات</div>
-                                    <textarea rows="3" className="form-control no-resize" id="comment" onChange={this.handleChange}></textarea>
+                                    <textarea rows="3" className="form-control no-resize" id="comment"
+                                        onChange={this.handleChange} value={this.state.comment}></textarea>
                                 </div>
                             </div>
                             <div className="row rtl text-right">
                                 <div className="col-sm-6">
-                                    <input type="file" className="mt-3" id="file" onChange={this.handleChange} />
+                                    <input type="file" className="mt-3" id="file"
+                                        onChange={this.handleChange} value={this.state.file} />
                                 </div>
                                 <div className="col-sm-6 text-left pt-3">
                                     <div className="spinner-border ml-2 loading" role="status"
