@@ -1,6 +1,20 @@
 import React, { Component } from 'react'
+import http from 'axios';
 
 export default class TradesTable extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            trades: []
+        }
+    }
+
+    componentDidMount() {
+        http.get('/GetTrades?id=-1&startDate=-1&endDate=-1').then(x => {
+            this.setState({ trades: x.data })
+        });
+    }
+
     render() {
         return (
             <div>
@@ -18,7 +32,7 @@ export default class TradesTable extends Component {
                 </div>
                 <div className="table-responsive">
                     <table className="table table-bordered table-hover mt-3" id="tablejournals">
-                        <thead>
+                        {this.state.trades.length > 0 && (<thead>
                             <tr>
                                 <th>ردیف</th>
                                 <th>نماد</th>
@@ -30,10 +44,26 @@ export default class TradesTable extends Component {
                                 <th></th>
                                 <th></th>
                             </tr>
-                        </thead>
+                        </thead>)}
+                        <tbody>
+                            {this.state.trades.map((x, index) => {
+                                return <tr key={index}>
+                                    <td>{index + 1}</td>
+                                    <td>{x.symbol}</td>
+                                    <td>{x.enterDate}</td>
+                                    <td>{x.closeDate}</td>
+                                    <td>{x.volume}</td>
+                                    <td style={{ backgroundColor: parseFloat(x.profit) < 0 
+                                        ? 'lightcoral' : 'lightgreen' }}>{x.profit}</td>
+                                    <td>{x.filePath.length > 0 ? 'دارد' : 'ندارد'}</td>
+                                    <td><a>نمایش</a></td>
+                                    <td><a>ویرایش</a></td>
+                                </tr>
+                            })}
+                        </tbody>
                     </table>
                 </div>
-            </div>
+            </div >
         )
     }
 }

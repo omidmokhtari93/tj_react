@@ -89,32 +89,36 @@ body {
 
 #tablejournals {
     direction: rtl;
-}
-#tablejournals tr td, #tablejournals tr th {
-    text-align: center;
-    border: 1px solid rgb(133, 133, 133) !important;
-    direction: ltr !important;
+
+    tr td,
+    tr th {
+        text-align: center;
+        border: 1px solid rgb(133, 133, 133) !important;
+        direction: ltr !important;
+    }
+
+    tr th {
+        background-color: silver !important;
+    }
+
+    tr td a {
+        color: blue;
+        cursor: pointer;
+    }
+
+    tr td img {
+        width: 50px;
+        height: auto;
+    }
 }
 
-#tablejournals tr th {
-    background-color: silver !important;
-}
-
-#tablejournals tr td span {
-    color: blue;
-    cursor: pointer;
-}
-
-#tablejournals tr td img {
-    width: 50px;
-    height: auto;
-}
 .login-loading {
     vertical-align: middle !important;
     width: 15px;
     height: 15px;
 }
-.validator{
+
+.validator {
     vertical-align: middle !important;
     float: left;
     color: red;

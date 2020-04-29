@@ -1,7 +1,6 @@
 
 import React, { Component } from 'react';
 import TradesTable from './Table';
-import BrokerTimeDate from '../Shared/BrokerTimeDate';
 
 export default class Panel extends Component {
     constructor(props) {
@@ -28,7 +27,23 @@ export default class Panel extends Component {
     }
 
     submitForm = e => {
+        console.log(this.state)
+    }
 
+    brokerTimeDate = e => {
+        let d = new Date();
+        d.setMinutes(d.getMinutes() - 30);
+        d.setHours(d.getHours() - 1);
+        let time = d.getFullYear() + "-"
+            + (((d.getMonth() + 1) < 10 ? '0' : '') + d.getMonth()) + "-"
+            + ((d.getDate() < 10 ? '0' : '') + d.getDate()) + " "
+            + d.getHours() + ":" + ((d.getMinutes() < 10 ? '0' : '') + d.getMinutes());
+        this.setState({ [e.target.id]: time })
+        e.target.value = time;
+    }
+
+    editTrade = e => {
+        console.log(e)
     }
 
     render() {
@@ -50,13 +65,13 @@ export default class Panel extends Component {
                                 <div className="col-sm-6">
                                     <div className="mt-1">زمان ورود به معامله</div>
                                     <input className="form-control text-center ltr" id="enterdate"
-                                        onChange={this.handleChange} onFocus={(e) => { BrokerTimeDate(e) }} required
+                                        onChange={this.handleChange} onFocus={(e) => { this.brokerTimeDate(e) }} required
                                         value={this.state.enterdate} style={{ fontFamily: 'arial' }} />
                                 </div>
                                 <div className="col-sm-6">
                                     <div className="mt-1">زمان خروج از معامله</div>
                                     <input className="form-control text-center ltr" id="closedate"
-                                        onChange={this.handleChange} onFocus={(e) => { BrokerTimeDate(e) }}
+                                        onChange={this.handleChange} onFocus={(e) => { this.brokerTimeDate(e) }}
                                         value={this.state.closedate} style={{ fontFamily: 'arial' }} />
                                 </div>
                             </div>
@@ -127,14 +142,14 @@ export default class Panel extends Component {
                             <div className="row rtl text-right">
                                 <div className="col-sm-6">
                                     <input type="file" className="mt-3" id="file"
-                                        onChange={this.handleChange} value={this.state.file} />
+                                        onChange={this.handleChange} />
                                 </div>
                                 <div className="col-sm-6 text-left pt-3">
                                     <div className="spinner-border ml-2 loading" role="status"
                                         style={{ verticalAlign: 'middle', display: 'none' }}>
                                         <span className="sr-only">Loading...</span>
                                     </div>
-                                    <button className="btn btn-primary" id="sabt">ثبت</button>
+                                    <button className="btn btn-primary" id="sabt" onClick={this.submitForm}>ثبت</button>
                                     <button className="btn btn-danger" id="edit" style={{ display: 'none' }}>
                                         ویرایش
                                 </button>
@@ -144,7 +159,7 @@ export default class Panel extends Component {
                                 </div>
                             </div>
                         </div>
-                        <TradesTable />
+                        <TradesTable editTrade={this.editTrade} />
                     </div>
                 </div>
             </div >
