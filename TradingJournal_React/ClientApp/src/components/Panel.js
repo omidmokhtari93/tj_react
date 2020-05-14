@@ -1,6 +1,7 @@
 
 import React, { Component } from 'react';
 import TradesTable from './Table';
+import getTimeDate from '../Shared/BrokerTimeDate'
 
 export default class Panel extends Component {
     constructor(props) {
@@ -31,13 +32,7 @@ export default class Panel extends Component {
     }
 
     brokerTimeDate = e => {
-        let d = new Date();
-        d.setMinutes(d.getMinutes() - 30);
-        d.setHours(d.getHours() - 1);
-        let time = d.getFullYear() + "-"
-            + (((d.getMonth() + 1) < 10 ? '0' : '') + d.getMonth()) + "-"
-            + ((d.getDate() < 10 ? '0' : '') + d.getDate()) + " "
-            + d.getHours() + ":" + ((d.getMinutes() < 10 ? '0' : '') + d.getMinutes());
+        let time = getTimeDate();
         this.setState({ [e.target.id]: time })
         e.target.value = time;
     }
