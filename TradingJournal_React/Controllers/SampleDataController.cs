@@ -13,7 +13,7 @@ namespace TradingJournal_React.Controllers
     {
         private readonly SqlConnection con = new SqlConnection(connectionString: "Server=faraz.r1host.com;Database=bornate1_tj;User ID=bornate1_user;Password=z6~tQq13");
         [HttpGet("/GetTrades")]
-        public JsonResult GetTrades([FromQuery]int id, string startDate, string endDate)
+        public JsonResult GetTrades(int id, string startDate, string endDate)
         {
             var list = new List<TradeData>();
             con.Open();

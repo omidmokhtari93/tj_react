@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import TradesTable from './Table';
 import getTimeDate from '../Shared/BrokerTimeDate'
+import http from 'axios';
 
 export default class Panel extends Component {
     constructor(props) {
@@ -17,8 +18,15 @@ export default class Panel extends Component {
             closeravani: '',
             mistakes: '',
             comment: '',
-            file: null
+            file: null,
+            editActive: false,
+            editButton: null
         }
+    }
+
+    componentDidMount() {
+        var el = document.getElementById('symbol');
+        this.state.symbol == '' && this.setState({ symbol: el.options[0].value })
     }
 
     handleChange = e => {
@@ -32,13 +40,55 @@ export default class Panel extends Component {
     }
 
     brokerTimeDate = e => {
-        let time = getTimeDate();
-        this.setState({ [e.target.id]: time })
-        e.target.value = time;
+        if (e.target.value == '') {
+            let time = getTimeDate()
+            this.setState({ [e.target.id]: time })
+            e.target.value = time
+        }
     }
 
-    editTrade = e => {
-        console.log(e)
+    editTrade = (el, id) => {
+        this.state.editButton != null && (this.state.editButton.style.color = '')
+        el.target.style.color = 'red'
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        this.setState({ editActive: true, editButton: el.target })
+        http.get('/GetTrades', { params: { id: id, startDate: -1, endDate: -1 } }).then(x => {
+            this.setState({
+                enterdate: x.data[0].enterDate,
+                closedate: x.data[0].closeDate,
+                symbol: x.data[0].symbol,
+                volume: x.data[0].volume,
+                profit: x.data[0].profit,
+                tradereason: x.data[0].tradeReason,
+                enterravani: x.data[0].enterRavani,
+                closeravani: x.data[0].closeRavani,
+                mistakes: x.data[0].mistakes,
+                comment: x.data[0].comment,
+            })
+        })
+    }
+
+    acceptEdit = e => {
+        this.state.editButton.style.color = '';
+        this.setState({ editActive: false })
+    }
+
+    cancelEdit = e => {
+        this.state.editButton.style.color = '';
+        this.setState({
+            editActive: false,
+            enterdate: '',
+            closedate: '',
+            symbol: '',
+            volume: '',
+            profit: '',
+            tradereason: '',
+            enterravani: '',
+            closeravani: '',
+            mistakes: '',
+            comment: '',
+            file: null,
+        })
     }
 
     render() {
@@ -144,13 +194,13 @@ export default class Panel extends Component {
                                         style={{ verticalAlign: 'middle', display: 'none' }}>
                                         <span className="sr-only">Loading...</span>
                                     </div>
-                                    <button className="btn btn-primary" id="sabt" onClick={this.submitForm}>ثبت</button>
-                                    <button className="btn btn-danger" id="edit" style={{ display: 'none' }}>
-                                        ویرایش
-                                </button>
-                                    <button className="btn btn-success" id="cancel" style={{ display: 'none' }}>
-                                        انصراف
-                                </button>
+                                    {this.state.editActive
+                                        ? <div>
+                                            <button className="btn btn-danger ml-1" id="edit" onClick={this.acceptEdit}>ویرایش</button>
+                                            <button className="btn btn-success" id="cancel" onClick={this.cancelEdit}>انصراف</button>
+                                        </div>
+                                        : <button className="btn btn-primary" id="sabt" onClick={this.submitForm}>ثبت</button>
+                                    }
                                 </div>
                             </div>
                         </div>

@@ -10,9 +10,13 @@ export default class TradesTable extends Component {
     }
 
     componentDidMount() {
-        http.get('/GetTrades?id=-1&startDate=-1&endDate=-1').then(x => {
+        http.get('/GetTrades', { params: { id: -1, startDate: -1, endDate: -1 } }).then(x => {
             this.setState({ trades: x.data })
         });
+    }
+
+    showHistory = (e, id) => {
+        console.log(id)
     }
 
     render() {
@@ -53,11 +57,13 @@ export default class TradesTable extends Component {
                                     <td>{x.enterDate}</td>
                                     <td>{x.closeDate}</td>
                                     <td>{x.volume}</td>
-                                    <td style={{ backgroundColor: parseFloat(x.profit) < 0 
-                                        ? 'lightcoral' : 'lightgreen' }}>{x.profit}</td>
+                                    <td style={{
+                                        backgroundColor: parseFloat(x.profit) < 0
+                                            ? 'lightcoral' : 'lightgreen'
+                                    }}>{x.profit}</td>
                                     <td>{x.filePath.length > 0 ? 'دارد' : 'ندارد'}</td>
-                                    <td><a>نمایش</a></td>
-                                    <td><a>ویرایش</a></td>
+                                    <td><a onClick={(e) => this.showHistory(e, x.id)}>نمایش</a></td>
+                                    <td><a onClick={(e) => this.props.editTrade(e, x.id)}>ویرایش</a></td>
                                 </tr>
                             })}
                         </tbody>
