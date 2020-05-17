@@ -25,8 +25,7 @@ export default class Panel extends Component {
     }
 
     componentDidMount() {
-        var el = document.getElementById('symbol');
-        this.state.symbol == '' && this.setState({ symbol: el.options[0].value })
+        this.state.symbol == '' && this.setState({ symbol: document.getElementById('symbol').options[0].value })
     }
 
     handleChange = e => {
