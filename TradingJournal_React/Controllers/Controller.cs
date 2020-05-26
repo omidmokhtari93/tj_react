@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
@@ -43,6 +43,24 @@ namespace TradingJournal_React.Controllers
                 });
             }
             return new JsonResult(list);
+        }
+
+        [HttpPost("/SaveTrade")]
+        public JsonResult SaveTrade()
+        {
+            var files = HttpContext.Request.Form.Files["img"];
+            con.Open();
+            //var cmd = new SqlCommand("INSERT INTO Journals ([Created],[Modified],[EnterDate],[CloseDate],[Symbol],[Volume]," +
+            //                         "[Profit],[TradeReason],[EnterRavani],[CloseRavani],[Comment],[FilePath],[Mistakes])" +
+            //                         "VALUES('" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + "' " +
+            //                         ", '" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + "'" +
+            //                         ",'" + obj.EnterDate + "' , '" + obj.CloseDate + "' , '" + obj.Symbol + "'" +
+            //                         ", '" + obj.Volume + "','" + obj.Profit + "'" +
+            //                         ",N'" + obj.TradeReason + "' , N'" + obj.EnterRavani + "',N'" + obj.CloseRavani + "'" +
+            //                         ", N'" + obj.Comment + "','" + "filepath" + "' , N'" + obj.Mistakes + "')", con);
+            return new JsonResult(new { message = "با موفقیت ثبت شد", type = "success" });
+            //cmd.ExecuteNonQuery();
+            //con.Close();
         }
 
         public class TradeData

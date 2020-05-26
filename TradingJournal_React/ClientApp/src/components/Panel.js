@@ -3,8 +3,19 @@ import React, { Component } from 'react';
 import TradesTable from './Table';
 import getTimeDate from '../Shared/BrokerTimeDate'
 import http from 'axios';
+import NotificationSystem from 'react-notification-system';
 
 export default class Panel extends Component {
+    notificationSystem = React.createRef();
+    addNotification = (message, type) => {
+        const notification = this.notificationSystem.current;
+        notification.addNotification({
+            message: message,
+            level: type,
+            position: 'tl',
+            autoDismiss: 3
+        });
+    };
     constructor(props) {
         super(props);
         this.state = {
@@ -35,7 +46,15 @@ export default class Panel extends Component {
     }
 
     submitForm = e => {
-        console.log(this.state)
+        if (this.state.enterdate == '' || this.state.volume == '') {
+            this.addNotification('لطفا فیلدهای خالی را تکمیل کنید', 'error')
+            return;
+        }
+        var fd = new FormData();
+        fd.append('img', this.state.file);
+        http.post('/SaveTrade', fd).then(e => {
+            console.log(e.data)
+        }).catch(() => this.addNotification('خطا در ثبت', ''))
     }
 
     brokerTimeDate = e => {
@@ -93,6 +112,7 @@ export default class Panel extends Component {
     render() {
         return (
             <div className="container sans p-4">
+                <NotificationSystem ref={this.notificationSystem} />
                 <ul className="nav nav-tabs rtl" id="myTab" role="tablist">
                     <li className="nav-item">
                         <a className="nav-link active" id="home-tab" data-toggle="tab"

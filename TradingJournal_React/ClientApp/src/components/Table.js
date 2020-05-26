@@ -1,7 +1,18 @@
 import React, { Component } from 'react'
 import http from 'axios';
+import NotificationSystem from 'react-notification-system';
 
 export default class TradesTable extends Component {
+    notificationSystem = React.createRef();
+    addNotification = (message, type) => {
+        const notification = this.notificationSystem.current;
+        notification.addNotification({
+            message: message,
+            level: type,
+            position: 'tl',
+            autoDismiss: 3
+        });
+    };
     constructor(props) {
         super(props);
         this.state = {
@@ -12,16 +23,19 @@ export default class TradesTable extends Component {
     componentDidMount() {
         http.get('/GetTrades', { params: { id: -1, startDate: -1, endDate: -1 } }).then(x => {
             this.setState({ trades: x.data })
+        }).catch(() => {
+            this.addNotification('خطا در دریافت اطلاعات', 'error');
         });
     }
 
     showHistory = (e, id) => {
-        console.log(id)
+        console.log(id);
     }
 
     render() {
         return (
-            <div>
+            < div >
+                <NotificationSystem ref={this.notificationSystem} />
                 <hr />
                 <div className="row rtl text-right mt-2" id="FilterArea">
                     <div className="col-sm-5">
