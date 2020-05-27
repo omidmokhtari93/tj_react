@@ -52,6 +52,7 @@ export default class Panel extends Component {
         }
         var fd = new FormData();
         fd.append('img', this.state.file);
+        fd.append('data', JSON.stringify(this.state));
         http.post('/SaveTrade', fd).then(e => {
             console.log(e.data)
         }).catch(() => this.addNotification('خطا در ثبت', ''))
