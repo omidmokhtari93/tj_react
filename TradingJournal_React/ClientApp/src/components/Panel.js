@@ -30,8 +30,10 @@ export default class Panel extends Component {
             mistakes: '',
             comment: '',
             file: null,
+            filePath: '',
             editActive: false,
-            editButton: null
+            editButton: null,
+            editId: null
         }
     }
 
@@ -54,8 +56,8 @@ export default class Panel extends Component {
         fd.append('img', this.state.file);
         fd.append('data', JSON.stringify(this.state));
         http.post('/SaveTrade', fd).then(e => {
-            console.log(e.data)
-        }).catch(() => this.addNotification('خطا در ثبت', ''))
+            this.addNotification('با موفقیت ثبت شد', 'success')
+        }).catch(() => this.addNotification('خطا در ثبت', 'error'))
     }
 
     brokerTimeDate = e => {
@@ -69,7 +71,6 @@ export default class Panel extends Component {
     editTrade = (el, id) => {
         this.state.editButton != null && (this.state.editButton.style.color = '')
         el.target.style.color = 'red'
-        window.scrollTo({ top: 0, behavior: 'smooth' });
         this.setState({ editActive: true, editButton: el.target })
         http.get('/GetTrades', { params: { id: id, startDate: -1, endDate: -1 } }).then(x => {
             this.setState({
@@ -83,14 +84,28 @@ export default class Panel extends Component {
                 closeravani: x.data[0].closeRavani,
                 mistakes: x.data[0].mistakes,
                 comment: x.data[0].comment,
-            })
+                filePath: x.data[0].filePath,
+                editId: x.data[0].id
+            });
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         })
     }
 
     acceptEdit = e => {
-        this.state.editButton.style.color = '';
-        this.setState({ editActive: false })
+        if (this.state.enterdate == '' || this.state.volume == '') {
+            this.addNotification('لطفا فیلدهای خالی را تکمیل کنید', 'error')
+            return;
+        }
+        var fd = new FormData();
+        fd.append('img', this.state.file);
+        fd.append('data', JSON.stringify(this.state));
+        http.post('/EditTrade', fd).then(e => {
+            this.state.editButton.style.color = '';
+            this.setState({ editActive: false });
+            this.addNotification('با موفقیت ویرایش شد', 'success')
+        }).catch(() => this.addNotification('خطا در ثبت', 'error'))
     }
+
 
     cancelEdit = e => {
         this.state.editButton.style.color = '';
@@ -106,6 +121,7 @@ export default class Panel extends Component {
             closeravani: '',
             mistakes: '',
             comment: '',
+            filePath: '',
             file: null,
         })
     }
@@ -206,8 +222,10 @@ export default class Panel extends Component {
                             </div>
                             <div className="row rtl text-right">
                                 <div className="col-sm-6">
-                                    <input type="file" className="mt-3" id="file"
+                                    <input type="file" className="mt-3" id="file" accept="image/png"
                                         onChange={this.handleChange} />
+                                    {this.state.filePath.length > 0 &&
+                                        (<a className="linkButton" href={this.state.filePath} target="_blank">download file</a>)}
                                 </div>
                                 <div className="col-sm-6 text-left pt-3">
                                     <div className="spinner-border ml-2 loading" role="status"

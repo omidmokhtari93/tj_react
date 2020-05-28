@@ -25,7 +25,7 @@ namespace TradingJournal_React.Controllers
         {
             var list = new List<TradeData>();
             con.Open();
-            var cmd = new SqlCommand("SELECT [Id],[Created],[Modified],[EnterDate],[CloseDate]" +
+            var cmd = new SqlCommand("SELECT TOP 10 [Id],[Created],[Modified],[EnterDate],[CloseDate]" +
                                      ",[Symbol],[Volume],[Profit],[TradeReason],[EnterRavani],[CloseRavani]" +
                                      ",[Comment],[FilePath],[Mistakes]FROM Journals " +
                                      "where (Id = " + id + " or " + id + " = -1) and " +
@@ -58,11 +58,11 @@ namespace TradingJournal_React.Controllers
         {
             var data = Request.Form["data"];
             var image = Request.Form.Files["img"];
-
+            var fileName = "";
             if (image != null)
             {
                 var uploads = Path.Combine(hostingEnvironment.WebRootPath, "uploads");
-                var fileName = $"{Guid.NewGuid().ToString().Replace("-", "")}.png";
+                fileName = $"{Guid.NewGuid().ToString().Replace("-", "")}.png";
                 var filePath = Path.Combine(uploads, fileName);
                 image.CopyTo(new FileStream(filePath, FileMode.Create));
             }
@@ -75,10 +75,53 @@ namespace TradingJournal_React.Controllers
                                      ",'" + obj.EnterDate + "' , '" + obj.CloseDate + "' , '" + obj.Symbol + "'" +
                                      ", '" + obj.Volume + "','" + obj.Profit + "'" +
                                      ",N'" + obj.TradeReason + "' , N'" + obj.EnterRavani + "',N'" + obj.CloseRavani + "'" +
-                                     ", N'" + obj.Comment + "','" + "filepath" + "' , N'" + obj.Mistakes + "')", con);
-            return new JsonResult(new { message = "با موفقیت ثبت شد", type = "success" });
+                                     ", N'" + obj.Comment + "','" + fileName + "' , N'" + obj.Mistakes + "')", con);
             cmd.ExecuteNonQuery();
             con.Close();
+            return new JsonResult(new { message = "با موفقیت ثبت شد", type = "success" });
+        }
+
+        [HttpPost("/EditTrade")]
+        public JsonResult EditJournal()
+        {
+            var data = Request.Form["data"];
+            var image = Request.Form.Files["img"];
+            var obj = JsonConvert.DeserializeObject<TradeData>(data);
+            var fileName = "";
+            if (image != null)
+            {
+                con.Open();
+                var cmdd = new SqlCommand("select FilePath from Journals where Id = " + obj.Id + " ", con);
+                var oldFileName = cmdd.ExecuteScalar().ToString();
+                if (System.IO.File.Exists(Path.Combine(hostingEnvironment.WebRootPath , "uploads" , oldFileName)))
+                {
+                    System.IO.File.Delete(Path.Combine(hostingEnvironment.WebRootPath, "uploads", oldFileName));
+                }
+                con.Close();
+                var uploads = Path.Combine(hostingEnvironment.WebRootPath, "uploads");
+                fileName = $"{Guid.NewGuid().ToString().Replace("-", "")}.png";
+                var filePath = Path.Combine(uploads, fileName);
+                image.CopyTo(new FileStream(filePath, FileMode.Create));
+            }
+            con.Open();
+            var cmd = new SqlCommand("update Journals set " +
+                                      "Modified = '" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + "'" +
+                                      ",EnterDate = '" + obj.EnterDate + "'" +
+                                      ",CloseDate = '" + obj.CloseDate + "'" +
+                                      ",Symbol = '" + obj.Symbol + "'" +
+                                      ",Volume = '" + obj.Volume + "'" +
+                                      ",Profit = '" + obj.Profit + "'" +
+                                      ",TradeReason = N'" + obj.TradeReason + "'" +
+                                      ",EnterRavani = N'" + obj.EnterRavani + "'" +
+                                      ",CloseRavani = N'" + obj.CloseRavani + "'" +
+                                      ",Comment = N'" + obj.Comment + "'" +
+                                      ",Mistakes =  N'" + obj.Mistakes + "'" +
+                                      " " + (fileName == "" ? "" : ",FilePath = '" + fileName + "' ") + " " +
+                                      " where Id = " + obj.Id + " ", con);
+
+            cmd.ExecuteNonQuery();
+            con.Close();
+            return new JsonResult(new { message = "با موفقیت ویرایش شد", type = "success" });
         }
 
         public class TradeData
