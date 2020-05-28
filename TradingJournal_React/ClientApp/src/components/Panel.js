@@ -33,12 +33,38 @@ export default class Panel extends Component {
             filePath: '',
             editActive: false,
             editButton: null,
-            editId: null
+            editId: null,
+            trades: []
         }
     }
 
     componentDidMount() {
         this.state.symbol == '' && this.setState({ symbol: document.getElementById('symbol').options[0].value })
+        this.getTrades();
+    }
+
+    getTrades = e => {
+        http.get('/GetTrades', { params: { id: -1, startDate: -1, endDate: -1 } }).then(x => {
+            this.setState({ trades: x.data })
+        }).catch(() => {
+            this.addNotification('خطا در دریافت اطلاعات', 'error');
+        });
+    }
+
+    getformData = action => {
+        return {
+            enterdate: this.state.enterdate,
+            closedate: this.state.closedate,
+            symbol: this.state.symbol,
+            volume: this.state.volume,
+            profit: this.state.profit,
+            tradereason: this.state.tradereason,
+            enterravani: this.state.enterravani,
+            closeravani: this.state.closeravani,
+            mistakes: this.state.mistakes,
+            comment: this.state.comment,
+            id: this.state.editId
+        }
     }
 
     handleChange = e => {
@@ -54,9 +80,11 @@ export default class Panel extends Component {
         }
         var fd = new FormData();
         fd.append('img', this.state.file);
-        fd.append('data', JSON.stringify(this.state));
+        fd.append('data', JSON.stringify(this.getformData()));
         http.post('/SaveTrade', fd).then(e => {
-            this.addNotification('با موفقیت ثبت شد', 'success')
+            this.addNotification(e.data.message, e.data.type);
+            this.getTrades();
+            this.resetState();
         }).catch(() => this.addNotification('خطا در ثبت', 'error'))
     }
 
@@ -98,19 +126,24 @@ export default class Panel extends Component {
         }
         var fd = new FormData();
         fd.append('img', this.state.file);
-        fd.append('data', JSON.stringify(this.state));
+        fd.append('data', JSON.stringify(this.getformData()));
         http.post('/EditTrade', fd).then(e => {
             this.state.editButton.style.color = '';
             this.setState({ editActive: false });
-            this.addNotification('با موفقیت ویرایش شد', 'success')
+            this.addNotification('با موفقیت ویرایش شد', 'success');
+            this.resetState();
+            this.getTrades();
         }).catch(() => this.addNotification('خطا در ثبت', 'error'))
     }
 
 
     cancelEdit = e => {
         this.state.editButton.style.color = '';
+        this.resetState();
+    }
+
+    resetState = e => {
         this.setState({
-            editActive: false,
             enterdate: '',
             closedate: '',
             symbol: '',
@@ -121,9 +154,13 @@ export default class Panel extends Component {
             closeravani: '',
             mistakes: '',
             comment: '',
-            filePath: '',
             file: null,
+            filePath: '',
+            editActive: false,
+            editButton: null,
+            editId: null
         })
+        document.getElementById('file').value = '';
     }
 
     render() {
@@ -225,7 +262,7 @@ export default class Panel extends Component {
                                     <input type="file" className="mt-3" id="file" accept="image/png"
                                         onChange={this.handleChange} />
                                     {this.state.filePath.length > 0 &&
-                                        (<a className="linkButton" href={this.state.filePath} target="_blank">download file</a>)}
+                                        (<a className="linkButton" href={"uploads/" + this.state.filePath} target="_blank">download file</a>)}
                                 </div>
                                 <div className="col-sm-6 text-left pt-3">
                                     <div className="spinner-border ml-2 loading" role="status"
@@ -242,7 +279,7 @@ export default class Panel extends Component {
                                 </div>
                             </div>
                         </div>
-                        <TradesTable editTrade={this.editTrade} />
+                        <TradesTable editTrade={this.editTrade} trades={this.state.trades} />
                     </div>
                 </div>
             </div >

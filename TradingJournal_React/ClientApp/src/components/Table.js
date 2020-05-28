@@ -15,17 +15,6 @@ export default class TradesTable extends Component {
     };
     constructor(props) {
         super(props);
-        this.state = {
-            trades: []
-        }
-    }
-
-    componentDidMount() {
-        http.get('/GetTrades', { params: { id: -1, startDate: -1, endDate: -1 } }).then(x => {
-            this.setState({ trades: x.data })
-        }).catch(() => {
-            this.addNotification('خطا در دریافت اطلاعات', 'error');
-        });
     }
 
     showHistory = (e, id) => {
@@ -50,7 +39,7 @@ export default class TradesTable extends Component {
                 </div>
                 <div className="table-responsive">
                     <table className="table table-bordered table-hover mt-3" id="tablejournals">
-                        {this.state.trades.length > 0 && (<thead>
+                        {this.props.trades.length > 0 && (<thead>
                             <tr>
                                 <th>ردیف</th>
                                 <th>نماد</th>
@@ -64,7 +53,7 @@ export default class TradesTable extends Component {
                             </tr>
                         </thead>)}
                         <tbody>
-                            {this.state.trades.map((x, index) => {
+                            {this.props.trades.map((x, index) => {
                                 return <tr key={index}>
                                     <td>{index + 1}</td>
                                     <td>{x.symbol}</td>
