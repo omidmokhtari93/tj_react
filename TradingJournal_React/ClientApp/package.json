@@ -8,14 +8,16 @@
     "bootstrap": "^4.3.1",
     "font-awesome": "^4.7.0",
     "jquery": "^3.4.1",
-    "node-sass": "^4.12.0",
+    "node-sass": "^4.14.1",
     "popper.js": "^1.15.0",
     "react": "^16.10.1",
+    "react-bootstrap4-modal": "^1.7.4",
     "react-dom": "^16.10.1",
     "react-hichestan-datetimepicker": "^2.0.15",
     "react-notification-system": "^0.2.17",
     "react-router-dom": "^5.1.2",
     "react-scripts": "^3.4.1",
+    "react-top-loading-bar": "^1.2.0",
     "typescript": "^3.8.3"
   },
   "scripts": {

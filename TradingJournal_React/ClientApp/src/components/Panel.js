@@ -5,6 +5,7 @@ import getTimeDate from '../Shared/BrokerTimeDate'
 import http from 'axios';
 import NotificationSystem from 'react-notification-system';
 import TradeModal from './Modal';
+import LoadingBar from 'react-top-loading-bar';
 
 export default class Panel extends Component {
     notificationSystem = React.createRef();
@@ -36,7 +37,8 @@ export default class Panel extends Component {
             editButton: null,
             editId: null,
             trades: [],
-            isOpen: false
+            isOpen: false,
+            tradeData: {}
         }
     }
 
@@ -46,8 +48,10 @@ export default class Panel extends Component {
     }
 
     getTrades = e => {
+        this.LoadingBar.continuousStart()
         http.get('/GetTrades', { params: { id: -1, startDate: -1, endDate: -1 } }).then(x => {
             this.setState({ trades: x.data })
+            this.LoadingBar.complete()
         }).catch(() => {
             this.addNotification('خطا در دریافت اطلاعات', 'error');
         });
@@ -80,6 +84,7 @@ export default class Panel extends Component {
             this.addNotification('لطفا فیلدهای خالی را تکمیل کنید', 'error')
             return;
         }
+        this.LoadingBar.continuousStart()
         var fd = new FormData();
         fd.append('img', this.state.file);
         fd.append('data', JSON.stringify(this.getformData()));
@@ -87,6 +92,7 @@ export default class Panel extends Component {
             this.addNotification(e.data.message, e.data.type);
             this.getTrades();
             this.resetState();
+            this.LoadingBar.complete()
         }).catch(() => this.addNotification('خطا در ثبت', 'error'))
     }
 
@@ -99,6 +105,7 @@ export default class Panel extends Component {
     }
 
     editTrade = (el, id) => {
+        this.LoadingBar.continuousStart()
         this.state.editButton != null && (this.state.editButton.style.color = '')
         el.target.style.color = 'red'
         this.setState({ editActive: true, editButton: el.target })
@@ -118,6 +125,7 @@ export default class Panel extends Component {
                 editId: x.data[0].id
             });
             window.scrollTo({ top: 0, behavior: 'smooth' });
+            this.LoadingBar.complete()
         })
     }
 
@@ -126,6 +134,7 @@ export default class Panel extends Component {
             this.addNotification('لطفا فیلدهای خالی را تکمیل کنید', 'error')
             return;
         }
+        this.LoadingBar.continuousStart()
         var fd = new FormData();
         fd.append('img', this.state.file);
         fd.append('data', JSON.stringify(this.getformData()));
@@ -135,6 +144,7 @@ export default class Panel extends Component {
             this.addNotification('با موفقیت ویرایش شد', 'success');
             this.resetState();
             this.getTrades();
+            this.LoadingBar.complete()
         }).catch(() => this.addNotification('خطا در ثبت', 'error'))
     }
 
@@ -165,14 +175,39 @@ export default class Panel extends Component {
         document.getElementById('file').value = '';
     }
 
-    showHistory = (el, id) => {
-        console.log(el, id)
-        this.setState({ isOpen: true })
+    showModal = (el, id) => {
+        if (el == 'close') {
+            this.setState({ isOpen: false })
+        } else {
+            this.LoadingBar.continuousStart()
+            http.get('/GetTrades', { params: { id: id, startDate: -1, endDate: -1 } }).then(x => {
+                var trade = {
+                    enterdate: x.data[0].enterDate,
+                    closedate: x.data[0].closeDate,
+                    symbol: x.data[0].symbol,
+                    volume: x.data[0].volume,
+                    profit: x.data[0].profit,
+                    tradereason: x.data[0].tradeReason,
+                    enterravani: x.data[0].enterRavani,
+                    closeravani: x.data[0].closeRavani,
+                    mistakes: x.data[0].mistakes,
+                    comment: x.data[0].comment,
+                    filePath: x.data[0].filePath,
+                }
+                this.setState({ isOpen: true, tradeData: trade })
+                this.LoadingBar.complete()
+            })
+        }
     }
 
     render() {
         return (
             <div className="container sans p-4">
+                <LoadingBar
+                    height={3}
+                    color='#f11946'
+                    onRef={ref => (this.LoadingBar = ref)}
+                />
                 <NotificationSystem ref={this.notificationSystem} />
                 <ul className="nav nav-tabs rtl" id="myTab" role="tablist">
                     <li className="nav-item">
@@ -286,8 +321,8 @@ export default class Panel extends Component {
                                 </div>
                             </div>
                         </div>
-                        <TradesTable editTrade={this.editTrade} trades={this.state.trades} showHistory={this.showHistory} />
-                        <TradeModal isOpen={this.state.isOpen} />
+                        <TradesTable editTrade={this.editTrade} trades={this.state.trades} showHistory={this.showModal} />
+                        <TradeModal isOpen={this.state.isOpen} handleShow={this.showModal} tradeData={this.state.tradeData} />
                     </div>
                 </div>
             </div >
