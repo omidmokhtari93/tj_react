@@ -4,6 +4,7 @@ import TradesTable from './Table';
 import getTimeDate from '../Shared/BrokerTimeDate'
 import http from 'axios';
 import NotificationSystem from 'react-notification-system';
+import TradeModal from './Modal';
 
 export default class Panel extends Component {
     notificationSystem = React.createRef();
@@ -34,7 +35,8 @@ export default class Panel extends Component {
             editActive: false,
             editButton: null,
             editId: null,
-            trades: []
+            trades: [],
+            isOpen: false
         }
     }
 
@@ -163,6 +165,11 @@ export default class Panel extends Component {
         document.getElementById('file').value = '';
     }
 
+    showHistory = (el, id) => {
+        console.log(el, id)
+        this.setState({ isOpen: true })
+    }
+
     render() {
         return (
             <div className="container sans p-4">
@@ -279,7 +286,8 @@ export default class Panel extends Component {
                                 </div>
                             </div>
                         </div>
-                        <TradesTable editTrade={this.editTrade} trades={this.state.trades} />
+                        <TradesTable editTrade={this.editTrade} trades={this.state.trades} showHistory={this.showHistory} />
+                        <TradeModal isOpen={this.state.isOpen} />
                     </div>
                 </div>
             </div >

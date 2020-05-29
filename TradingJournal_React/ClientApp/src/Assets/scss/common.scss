@@ -1,21 +1,21 @@
 @font-face {
-    font-family: 'sans';
-    src: url('../sans/IRANSans.woff2')
+    font-family: "sans";
+    src: url("../sans/IRANSans.woff2");
 }
 
 @font-face {
-    font-family: 'light_sans';
-    src: url('../sans/IRANSansWeb_Light.woff2')
+    font-family: "light_sans";
+    src: url("../sans/IRANSansWeb_Light.woff2");
 }
 
 @font-face {
-    font-family: 'medium_sans';
-    src: url('../sans/IRANSansWeb_Medium.woff2')
+    font-family: "medium_sans";
+    src: url("../sans/IRANSansWeb_Medium.woff2");
 }
 
 @font-face {
-    font-family: 'bold_sans';
-    src: url('../sans/IRANSansWeb_Bold.woff2')
+    font-family: "bold_sans";
+    src: url("../sans/IRANSansWeb_Bold.woff2");
 }
 
 .medium-sans {
@@ -125,14 +125,18 @@ body {
     font-size: 12pt;
     height: 5px;
 }
-.notification-message{
+.notification-message {
     text-align: right;
 }
-.notification-dismiss{
+.notification-dismiss {
     left: 5px;
 }
-.linkButton{
+.linkButton {
     border: 1px solid blue;
     padding: 0px 2px;
     border-radius: 3px;
+}
+.trade-image {
+    width: 100%;
+    height: auto;
 }

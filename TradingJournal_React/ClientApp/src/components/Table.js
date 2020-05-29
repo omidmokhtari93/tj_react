@@ -17,10 +17,6 @@ export default class TradesTable extends Component {
         super(props);
     }
 
-    showHistory = (e, id) => {
-        console.log(id);
-    }
-
     render() {
         return (
             < div >
@@ -65,7 +61,7 @@ export default class TradesTable extends Component {
                                             ? 'lightcoral' : 'lightgreen'
                                     }}>{x.profit}</td>
                                     <td>{x.filePath.length > 0 ? 'دارد' : 'ندارد'}</td>
-                                    <td><a onClick={(e) => this.showHistory(e, x.id)}>نمایش</a></td>
+                                    <td><a onClick={(e) => this.props.showHistory(e, x.id)}>نمایش</a></td>
                                     <td><a onClick={(e) => this.props.editTrade(e, x.id)}>ویرایش</a></td>
                                 </tr>
                             })}
