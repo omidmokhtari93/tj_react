@@ -93,15 +93,20 @@ namespace TradingJournal_React.Controllers
                 con.Open();
                 var cmdd = new SqlCommand("select FilePath from Journals where Id = " + obj.Id + " ", con);
                 var oldFileName = cmdd.ExecuteScalar().ToString();
-                if (System.IO.File.Exists(Path.Combine(hostingEnvironment.WebRootPath , "uploads" , oldFileName)))
+                var fi = new FileInfo(Path.Combine(hostingEnvironment.WebRootPath, "uploads", oldFileName));
+                if (fi.Exists)
                 {
-                    System.IO.File.Delete(Path.Combine(hostingEnvironment.WebRootPath, "uploads", oldFileName));
+                    fi.Delete();
                 }
                 con.Close();
                 var uploads = Path.Combine(hostingEnvironment.WebRootPath, "uploads");
                 fileName = $"{Guid.NewGuid().ToString().Replace("-", "")}.png";
                 var filePath = Path.Combine(uploads, fileName);
-                image.CopyTo(new FileStream(filePath, FileMode.Create));
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    image.CopyTo(stream);
+                }
+                
             }
             con.Open();
             var cmd = new SqlCommand("update Journals set " +
