@@ -43,7 +43,7 @@ export default class Panel extends Component {
     }
 
     componentDidMount() {
-        this.state.symbol == '' && this.setState({ symbol: document.getElementById('symbol').options[0].value })
+        this.state.symbol === '' && this.setState({ symbol: document.getElementById('symbol').options[0].value })
         this.getTrades();
     }
 

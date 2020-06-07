@@ -25,7 +25,7 @@ namespace TradingJournal_React.Controllers
         {
             var list = new List<TradeData>();
             con.Open();
-            var cmd = new SqlCommand("SELECT TOP 10 [Id],[Created],[Modified],[EnterDate],[CloseDate]" +
+            var cmd = new SqlCommand("SELECT [Id],[Created],[Modified],[EnterDate],[CloseDate]" +
                                      ",[Symbol],[Volume],[Profit],[TradeReason],[EnterRavani],[CloseRavani]" +
                                      ",[Comment],[FilePath],[Mistakes]FROM Journals " +
                                      "where (Id = " + id + " or " + id + " = -1) and " +
