@@ -61,7 +61,7 @@ export default class Panel extends Component {
         return {
             enterdate: this.state.enterdate,
             closedate: this.state.closedate,
-            symbol: this.state.symbol,
+            symbol: this.state.symbol == '' ? document.getElementById('symbol').options[0].value : this.state.symbol,
             volume: this.state.volume,
             profit: this.state.profit,
             tradereason: this.state.tradereason,
