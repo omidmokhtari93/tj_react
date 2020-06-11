@@ -22,7 +22,15 @@ export default class TradesTable extends Component {
         }
     }
 
+    componentWillReceiveProps(){
+        this.getStatistics();
+    }
+
     componentDidMount() {
+        this.getStatistics();
+    }
+
+    getStatistics = e => {
         http.get('/GetStatistic').then(x => {
             this.setState({
                 profit: x.data.profit,

@@ -133,6 +133,7 @@ namespace TradingJournal_React.Controllers
         public JsonResult GetStatistic()
         {
             con.Open();
+            var obj = new object();
             var cmd = new SqlCommand("select  profit , stop , reward from "+
                                      "(SELECT 'stop' as type, Count(Profit) as pr FROM Journals where Profit < 0 union all "+
                                      "SELECT 'profit' as type, Count(Profit) as pr FROM Journals where Profit > 0 union all "+
@@ -141,13 +142,14 @@ namespace TradingJournal_React.Controllers
             var rd = cmd.ExecuteReader();
             if (rd.Read())
             {
-                return new JsonResult(new {
+                obj = new {
                     Profit = rd["profit"].ToString(),
                     Stop = rd["stop"].ToString(),
                     Reward = rd["reward"].ToString()
-                });
+                };
             }
-            return new JsonResult(new { message = "خطا در دریافت اطلاعات", type = "error" });
+            con.Close();
+            return new JsonResult(obj);
         }
 
         public class TradeData
