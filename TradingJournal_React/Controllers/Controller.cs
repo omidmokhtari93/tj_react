@@ -129,6 +129,27 @@ namespace TradingJournal_React.Controllers
             return new JsonResult(new { message = "با موفقیت ویرایش شد", type = "success" });
         }
 
+         [HttpGet("/GetStatistic")]
+        public JsonResult GetStatistic()
+        {
+            con.Open();
+            var cmd = new SqlCommand("select  profit , stop , reward from "+
+                                     "(SELECT 'stop' as type, Count(Profit) as pr FROM Journals where Profit < 0 union all "+
+                                     "SELECT 'profit' as type, Count(Profit) as pr FROM Journals where Profit > 0 union all "+
+                                     "SELECT 'reward' as type, SUM(CAST(Profit as int)) as pr FROM Journals where Profit > 0) as j "+
+                                     "pivot(max(j.pr)for j.type in (profit , stop ,reward)) piv" ,con);
+            var rd = cmd.ExecuteReader();
+            if (rd.Read())
+            {
+                return new JsonResult(new {
+                    Profit = rd["profit"].ToString(),
+                    Stop = rd["stop"].ToString(),
+                    Reward = rd["reward"].ToString()
+                });
+            }
+            return new JsonResult(new { message = "خطا در دریافت اطلاعات", type = "error" });
+        }
+
         public class TradeData
         {
             public string Id { get; set; }

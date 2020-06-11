@@ -15,6 +15,21 @@ export default class TradesTable extends Component {
     };
     constructor(props) {
         super(props);
+        this.state = {
+            profit: '',
+            reward: '',
+            stop: ''
+        }
+    }
+
+    componentDidMount() {
+        http.get('/GetStatistic').then(x => {
+            this.setState({
+                profit: x.data.profit,
+                stop: x.data.stop,
+                reward: x.data.reward
+            })
+        })
     }
 
     render() {
@@ -23,14 +38,26 @@ export default class TradesTable extends Component {
                 <NotificationSystem ref={this.notificationSystem} />
                 <hr />
                 <div className="row rtl text-right mt-2" id="FilterArea">
-                    <div className="col-sm-5">
-                        <input className="form-control ltr text-center mt-1" required id="filterStartDate" readOnly style={{ fontFamily: 'arial' }} />
+                    <div className="col-sm-4 text-center">
+                        <span>تعداد معاملات سود : </span>
+                        <span className="statistic"
+                            style={{ backgroundColor: this.state.profit > 0 ? 'lightgreen' : 'lightcoral ' }}>
+                            {this.state.profit}
+                        </span>
                     </div>
-                    <div className="col-sm-5">
-                        <input className="form-control ltr text-center mt-1" required id="filterEndDate" readOnly style={{ fontFamily: 'arial' }} />
+                    <div className="col-sm-4 text-center">
+                        <span>تعداد معاملات ضرر : </span>
+                        <span className="statistic"
+                            style={{ backgroundColor: 'lightcoral' }}>
+                            {this.state.stop}
+                        </span>
                     </div>
-                    <div className="col-sm-2">
-                        <button className="btn btn-block btn-primary mt-1">فیلتر</button>
+                    <div className="col-sm-4 text-center">
+                        <span>ریوارد : </span>
+                        <span className="statistic"
+                            style={{ backgroundColor: this.state.reward > 0 ? 'lightgreen' : 'lightcoral ' }}>
+                            {this.state.reward}
+                        </span>
                     </div>
                 </div>
                 <div className="table-responsive">
