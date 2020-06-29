@@ -45,7 +45,7 @@ export default class TradesTable extends Component {
             < div >
                 <NotificationSystem ref={this.notificationSystem} />
                 <hr />
-                <div className="row rtl text-right mt-2" id="FilterArea">
+                <div className="row rtl text-right mt-2" id="statusArea">
                     <div className="col-sm-4 text-center">
                         <span>تعداد معاملات سود : </span>
                         <span className="statistic"

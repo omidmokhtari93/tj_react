@@ -125,22 +125,37 @@ body {
     font-size: 12pt;
     height: 5px;
 }
+
 .notification-message {
     text-align: right;
 }
+
 .notification-dismiss {
     left: 5px;
 }
+
 .linkButton {
     border: 1px solid blue;
     padding: 0px 2px;
     border-radius: 3px;
 }
+
 .trade-image {
     width: 100%;
     height: auto;
 }
-.statistic{
+
+.statistic {
     padding: 2px 5px;
     border-radius: 4px;
+}
+
+@media screen and (max-width: 575px) {
+    #statusArea div {
+        margin-bottom: 10px;
+    }
+
+    #statusArea div:last-child {
+        margin-bottom: 0px !important;
+    }
 }
